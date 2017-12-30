@@ -31,7 +31,7 @@ public class UserResource {
     @GET
     @Path("/{userId}")
     @Timed(name = "UsersGetTime")
-    public Response getAlbum(@PathParam("userId") long userId) {
+    public Response getUser(@PathParam("userId") long userId) {
         User album = userBean.getUser(userId);
 
         if (album == null) {
@@ -42,6 +42,19 @@ public class UserResource {
     }
 
     @GET
+    @Path("/{username}/{userpass}")
+    @Timed(name = "UsersGetTime")
+    public Response getCheckUser(@PathParam("username") String username, @PathParam("userpass") String userpass) {
+        User u = userBean.getUser(username, userpass);
+
+        if (u == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        return Response.status(Response.Status.OK).entity(u).build();
+    }
+
+    @GET
     @Path("/healthResponseCheck")
     public Response getCheck() {
         return Response.status(Response.Status.OK).build();
@@ -49,7 +62,7 @@ public class UserResource {
 
     @POST
     @Metered(name = "UserCreation")
-    public Response createAlbum(User user) {
+    public Response createUser(User user) {
 
         if (user.getName().isEmpty() || user.getPassword().isEmpty()) {
             return Response.status(Response.Status.BAD_REQUEST).build();
@@ -67,7 +80,7 @@ public class UserResource {
     @DELETE
     @Path("{userId}")
     @Metered(name = "UserDeletion")
-    public Response deleteAlbum(@PathParam("userId") Long userId) {
+    public Response deleteUser(@PathParam("userId") Long userId) {
         boolean deleted = userBean.deleteUser(userId);
 
         if (deleted) {

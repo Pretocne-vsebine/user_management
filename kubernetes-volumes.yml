@@ -4,7 +4,7 @@ metadata:
   name: local-pv-1
   labels:
     type: local
-    app: clip-management
+    app: user-management
 spec:
   capacity:
     storage: 5Gi

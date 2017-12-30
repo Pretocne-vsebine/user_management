@@ -39,6 +39,18 @@ public class UserBean {
         return u;
     }
 
+    public User getUser(String name, String pass) {
+        List<User> results = em.createNamedQuery("User.findOne", User.class)
+                .setParameter("name", name)
+                .setParameter("pass", pass)
+                .getResultList();
+
+        if(results != null && !results.isEmpty())
+            return results.get(0);
+        else
+            return null;
+    }
+
     @Transactional
     public User createUser(User user) {
         LOG.info("Creating user: {}", user);

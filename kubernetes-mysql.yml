@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-    name: clip-mysql
+    name: user-mysql
     labels:
-        app: clip-management
+        app: user-management
 spec:
     ports:
-        - port: 3306
+        - port: 3307
     selector:
-        app: clip-management
+        app: user-management
         tier: mysql
     clusterIP: None
 ---
@@ -17,12 +17,12 @@ kind: PersistentVolumeClaim
 metadata:
   name: mysql-pv-claim
   labels:
-    app: clip-management
+    app: user-management
 spec:
     selector:
         matchLabels:
             type: local
-            app: clip-management
+            app: user-management
     accessModes:
         - ReadWriteOnce
     resources:
@@ -32,33 +32,36 @@ spec:
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata: 
-    name: clip-mysql
+    name: user-mysql
     labels: 
-      app: clip-management
+      app: user-management
 spec:
     minReadySeconds: 10
     replicas: 1
     selector:
         matchLabels:
-            app: clip-management
+            app: user-management
             tier: mysql
     template: 
         metadata:
             
             labels:
-                app: clip-management
+                app: user-management
                 tier: mysql
         spec:
             containers:
                 - name: db-mysql
                   image: mariadb:10.3.2
+                  command:
+                    - "docker-entrypoint.sh"
+                    - "--port=3307"
                   env:
                     - name: MYSQL_ROOT_PASSWORD
                       value: root
                     - name: MYSQL_DATABASE
-                      value: clips
+                      value: users
                   ports:
-                    - containerPort: 3306
+                    - containerPort: 3307
                       name: mysql
                       protocol: TCP
                   volumeMounts:

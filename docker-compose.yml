@@ -2,8 +2,9 @@ version: "3.2"
 services:
   db_mysql:
     image: mariadb:10.3.2
+    command: docker-entrypoint.sh --port=3307
     ports:
-      - 3306:3306
+      - 3307:3307
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=users
@@ -11,12 +12,12 @@ services:
       - type: volume
         target: /var/lib/mysql
         source: user_db
-  clip_management:
+  user_management:
     image: zigakern/user_management:v0.1.0
     ports:
       - 8082:8082
     environment:
-      - KUMULUZEE_DATASOURCES0_CONNECTIONURL=jdbc:mysql://db_mysql:3306/users
+      - KUMULUZEE_DATASOURCES0_CONNECTIONURL=jdbc:mysql://db_mysql:3307/users
       - KUMULUZEE_SERVER_BASE-URL=http://192.168.99.100:8082
     depends_on:
       - db_mysql
